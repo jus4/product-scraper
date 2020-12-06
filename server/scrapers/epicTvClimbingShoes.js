@@ -1,12 +1,13 @@
 'use strict'
 const puppeteer = require('puppeteer')
-function scrapeEpicTv() {
+process.setMaxListeners(Infinity);
+function scrape(shoeUrl) {
     return new Promise(async (resolve, reject) => {
         try {
             const browser = await puppeteer.launch()
             const page = await browser.newPage()
             
-            await page.goto('https://shop.epictv.com/en/climbing-shoes/la-sportiva/solution-2015?sku=LASS18M_CSHOSOL_WHI36');
+            await page.goto(shoeUrl);
 
             // Get price
             const pricePath = await page.$x('/html/body/div[4]/div/div[3]/div/div/div/div/div/article/div[1]/div[1]/div/div[2]/div[1]/div[3]/div/div[2]/div/div/div/div');
@@ -15,7 +16,7 @@ function scrapeEpicTv() {
 
             // Get sizes
             await page.waitForSelector('.size-link-wrapper');
-            const solutionMenSizes = await page.evaluate(() => {
+            const shoeSizes = await page.evaluate(() => {
                    let array = [];
                    let elements = document.getElementsByClassName('size-link-wrapper');
                    for (i = 0; i < elements.length; i++) {
@@ -27,11 +28,17 @@ function scrapeEpicTv() {
             });
 
             browser.close()
-            return resolve({ shop: 'epictv', solutionMenPrice: parseFloat(price), solutionMenSizes: solutionMenSizes});
+
+            const product = {
+                price: parseFloat(price),
+                sizes: shoeSizes
+            } 
+            
+            return resolve(product);
         } catch(e) {
             reject(e);
         }
     })
 }
 
-exports.scrape = scrapeEpicTv;
+exports.scrape = scrape;
