@@ -7,6 +7,10 @@ const shoeVariation = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Shop',
     },
+    model: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'ClimbingShoeModel',
+    },
     source: String,
 }, { timestamps: true })
 const climbingShoeVariation = mongoose.model('ClimbingShowVariation', shoeVariation);

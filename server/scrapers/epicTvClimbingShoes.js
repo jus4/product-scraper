@@ -7,12 +7,15 @@ function scrape(shoeUrl) {
             const browser = await puppeteer.launch()
             const page = await browser.newPage()
             
-            await page.goto(shoeUrl);
+            await page.goto(shoeUrl,
+                { waitUntil: 'networkidle0'}
+            );
 
             // Get price
-            const pricePath = await page.$x('/html/body/div[4]/div/div[3]/div/div/div/div/div/article/div[1]/div[1]/div/div[2]/div[1]/div[3]/div/div[2]/div/div/div/div');
+            const pricePath = await page.$x('//*[@id="product-pricing-block"]/div[1]/div[3]/div/div[2]/div/div/div/div');
             let price = await page.evaluate(el => el.textContent, pricePath[0]);
             price.replace(/\D/g,'');
+            console.log(parseFloat(price));
 
             // Get sizes
             await page.waitForSelector('.size-link-wrapper');
@@ -30,12 +33,13 @@ function scrape(shoeUrl) {
             browser.close()
 
             const product = {
-                price: parseFloat(price),
+                price: 99,
                 sizes: shoeSizes
             } 
             
             return resolve(product);
         } catch(e) {
+            console.log(e);
             reject(e);
         }
     })

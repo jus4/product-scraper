@@ -4,8 +4,8 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const scrapers = require('./server/scrapers');
 const shopItems = require('./shopItems.json');
+const cron = require('node-cron');
 const {Shop, climbingShoeModel, climbingShoeVariation } = require('./server/models');
-const shop = require('./server/models/shop');
 
 mongoose.connect('mongodb://localhost/productScraper', {useNewUrlParser: true, useUnifiedTopology: true});
 mongoose.set('useCreateIndex', true);
@@ -58,56 +58,72 @@ async function getShop(name) {
   return newShop
 }
 
-const scrapedData = [];
-shopItems.forEach( async (shopItem) => {
-    scrapedData.push(scrapers[shopItem.scraper].scrape(shopItem.url))
+cron.schedule('15,30,45,59 8-18 * * *', async function(){
+
+  const scrapedData = [];
+  shopItems.forEach( async (shopItem) => {
+      scrapedData.push(scrapers[shopItem.scraper].scrape(shopItem.url))
+  });
+  
+  Promise.all(scrapedData).then( function(response) {
+    //console.log(response[0]);
+    let interval = 10 * 100; // 10 seconds;
+    for (let i = 0; i <=  response.length - 1 ; i++) {
+      setTimeout( async function (i) {
+        
+        const shop = await getShop(shopItems[i].shop);
+        const shoeLabel = await getShoeLabel(shopItems[i].model);
+  
+        const variationOptions = { upsert: true, new: true, setDefaultsOnInsert: true };
+        const shoeVariationUpdate = {
+          price: response[i].price,
+          sizes: response[i].sizes,
+          shop: shop._id,
+          source: shopItems[i].url,
+        }
+        await climbingShoeVariation.findOneAndUpdate( {source: shopItems[i].url},shoeVariationUpdate, variationOptions, function(err, document) {
+          if (err) return
+          }).then( async function(document) {
+            const modelOptions = { upsert: true, new: true, setDefaultsOnInsert: true };
+            const modelUpdate = {
+              $addToSet: {shoeCollection: document._id}
+            }
+            await climbingShoeModel.findOneAndUpdate( {model: shopItems[i].model}, modelUpdate, modelOptions, function( err, document) {
+              if (err) console.log(err)
+              console.log(document);
+            }).then( async function(document) {
+              
+              // Update model to shoe variation
+              const variationOptions = { upsert: true, new: true, setDefaultsOnInsert: true };
+              const shoeVariationUpdate = {
+                model: document._id,
+              }
+              await climbingShoeVariation.findOneAndUpdate({source: shopItems[i].url}, shoeVariationUpdate, variationOptions);
+
+            } )
+
+            
+
+  
+            const shopOptions = { upsert: true, new: true, setDefaultsOnInsert: true };
+            const shoplUpdate = {
+              $addToSet: {shoes: document._id}
+            }
+            await Shop.findOneAndUpdate( {name: shopItems[i].shop}, shoplUpdate, shopOptions, function( err, document) {
+              if (err) console.log(err)
+              console.log(document);
+            })
+  
+        })
+  
+  
+      }, interval * i, i);
+  
+  
+    }
+  })
+
 });
-
-Promise.all(scrapedData).then( function(response) {
-  //console.log(response[0]);
-  let interval = 10 * 100; // 10 seconds;
-  for (let i = 0; i <=  response.length - 1 ; i++) {
-    setTimeout( async function (i) {
-      
-      const shop = await getShop(shopItems[i].shop);
-      const shoeLabel = await getShoeLabel(shopItems[i].model);
-
-      const variationOptions = { upsert: true, new: true, setDefaultsOnInsert: true };
-      const shoeVariationUpdate = {
-        price: response[i].price,
-        sizes: response[i].sizes,
-        shop: shop._id,
-        source: shopItems[i].url
-      }
-      await climbingShoeVariation.findOneAndUpdate( {source: shopItems[i].url},shoeVariationUpdate, variationOptions, function(err, document) {
-        if (err) return
-        }).then( async function(document) {
-          const modelOptions = { upsert: true, new: true, setDefaultsOnInsert: true };
-          const modelUpdate = {
-            $addToSet: {shoeCollection: document._id}
-          }
-          await climbingShoeModel.findOneAndUpdate( {model: shopItems[i].model}, modelUpdate, modelOptions, function( err, document) {
-            if (err) console.log(err)
-            console.log(document);
-          })
-
-          const shopOptions = { upsert: true, new: true, setDefaultsOnInsert: true };
-          const shoplUpdate = {
-            $addToSet: {shoes: document._id}
-          }
-          await Shop.findOneAndUpdate( {name: shopItems[i].shop}, shoplUpdate, shopOptions, function( err, document) {
-            if (err) console.log(err)
-            console.log(document);
-          })
-
-      })
-
-
-    }, interval * i, i);
-
-
-  }
-})
 
 
 

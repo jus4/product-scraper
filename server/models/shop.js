@@ -5,7 +5,7 @@ const shop = new mongoose.Schema({
         type:String,
         unique: true,
     },
-    shoes: [{type: mongoose.Schema.Types.ObjectId, ref: 'ClimbingShoeModel',}],
+    shoes: [{type: mongoose.Schema.Types.ObjectId, ref: 'ClimbingShowVariation',}],
 });
 
 module.exports = mongoose.model('Shop', shop);

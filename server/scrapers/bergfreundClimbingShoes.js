@@ -40,6 +40,7 @@ function scrape(shoeUrl) {
             
             return resolve(product);
         } catch(e) {
+            console.log(e);
             reject(e);
         }
     })
