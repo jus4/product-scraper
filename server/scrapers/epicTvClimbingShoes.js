@@ -10,12 +10,12 @@ function scrape(shoeUrl) {
             await page.goto(shoeUrl,
                 { waitUntil: 'networkidle0'}
             );
+            await page.setDefaultNavigationTimeout(0);
 
             // Get price
             const pricePath = await page.$x('//*[@id="product-pricing-block"]/div[1]/div[3]/div/div[2]/div/div/div/div');
             let price = await page.evaluate(el => el.textContent, pricePath[0]);
-            price.replace(/\D/g,'');
-            console.log(parseFloat(price));
+            price = price.replace(/€/g, '');
 
             // Get sizes
             await page.waitForSelector('.size-link-wrapper');
@@ -33,7 +33,7 @@ function scrape(shoeUrl) {
             browser.close()
 
             const product = {
-                price: 99,
+                price: parseFloat(price),
                 sizes: shoeSizes
             } 
             

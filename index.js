@@ -5,6 +5,8 @@ const mongoose = require('mongoose');
 const scrapers = require('./server/scrapers');
 const shopItems = require('./shopItems.json');
 const cron = require('node-cron');
+const path = require('path');
+const Queue = require('bull');
 const {Shop, climbingShoeModel, climbingShoeVariation } = require('./server/models');
 
 mongoose.connect('mongodb://localhost/productScraper', {useNewUrlParser: true, useUnifiedTopology: true});
@@ -12,153 +14,37 @@ mongoose.set('useCreateIndex', true);
 mongoose.set('useNewUrlParser', true);
 mongoose.set('useFindAndModify', false);
 mongoose.set('useUnifiedTopology', true);
-
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
     console.log('Mongo db connected');
 });
 
-async function getShoeLabel(label) {
-  const shoeLabel = await climbingShoeModel.findOne({ model: label});
-  if (shoeLabel) {
-    return shoeLabel
+const scrapeProcessData = new Queue('scrapedata', {
+  redis: {
+    host: '127.0.0.1',
+    port: 6379,
   }
-  const newShoeLabel = new climbingShoeModel({
-    model: label,
-    shoeCollection: []
-  })
-  newShoeLabel.save( function(err, document) {
-    if (err) {
-      console.log(err);
-    }
-    console.log(document);
-  })
-
-
-  return newShoeLabel;
-}
-
-
-async function getShop(name) {
-  const shop = await Shop.findOne({name: name});
-  if (shop) {
-    return shop
-  }
-  const newShop = new Shop({
-    name: name,
-    shoes: [],
-  })
-
-  newShop.save( function(err, document) {
-    if (err) console.log(err)
-    console.log(document);
-  } )
-
-  return newShop
-}
-
-cron.schedule('15,30,45,59 8-18 * * *', async function(){
-
-  const scrapedData = [];
-  shopItems.forEach( async (shopItem) => {
-      scrapedData.push(scrapers[shopItem.scraper].scrape(shopItem.url))
-  });
-  
-  Promise.all(scrapedData).then( function(response) {
-    //console.log(response[0]);
-    let interval = 10 * 100; // 10 seconds;
-    for (let i = 0; i <=  response.length - 1 ; i++) {
-      setTimeout( async function (i) {
-        
-        const shop = await getShop(shopItems[i].shop);
-        const shoeLabel = await getShoeLabel(shopItems[i].model);
-  
-        const variationOptions = { upsert: true, new: true, setDefaultsOnInsert: true };
-        const shoeVariationUpdate = {
-          price: response[i].price,
-          sizes: response[i].sizes,
-          shop: shop._id,
-          source: shopItems[i].url,
-        }
-        await climbingShoeVariation.findOneAndUpdate( {source: shopItems[i].url},shoeVariationUpdate, variationOptions, function(err, document) {
-          if (err) return
-          }).then( async function(document) {
-            const modelOptions = { upsert: true, new: true, setDefaultsOnInsert: true };
-            const modelUpdate = {
-              $addToSet: {shoeCollection: document._id}
-            }
-            await climbingShoeModel.findOneAndUpdate( {model: shopItems[i].model}, modelUpdate, modelOptions, function( err, document) {
-              if (err) console.log(err)
-              console.log(document);
-            }).then( async function(document) {
-              
-              // Update model to shoe variation
-              const variationOptions = { upsert: true, new: true, setDefaultsOnInsert: true };
-              const shoeVariationUpdate = {
-                model: document._id,
-              }
-              await climbingShoeVariation.findOneAndUpdate({source: shopItems[i].url}, shoeVariationUpdate, variationOptions);
-
-            } )
-
-            
-
-  
-            const shopOptions = { upsert: true, new: true, setDefaultsOnInsert: true };
-            const shoplUpdate = {
-              $addToSet: {shoes: document._id}
-            }
-            await Shop.findOneAndUpdate( {name: shopItems[i].shop}, shoplUpdate, shopOptions, function( err, document) {
-              if (err) console.log(err)
-              console.log(document);
-            })
-  
-        })
-  
-  
-      }, interval * i, i);
-  
-  
-    }
-  })
-
 });
 
+scrapeProcessData.on('completed', job => {
+  console.log(`Job with id ${job.id} has been completed. Product ${job.data.model}`);
+})
 
-
-   
-  // await shoeLabel.save()
-  //   .then( async (result) => {
-  //     await Shop.findById(shop._id, (err, shop) => {
-  //       if(shop) {
-  //         shop.shoes.push(shoeLabel);
-  //         shop.save();
-  //       }
-  //     })
-  //   })
-
-
-
-
-
+scrapeProcessData.process(path.resolve(__dirname, './server/prosessors/scrapeShoes.js'));
+cron.schedule('45,30,50 8-20 * * *', async function(){
+  for( let i = 0; i < shopItems.length; i++) {
+    const data = shopItems[i];
+    const options = {
+      delay: 100, // 1 min in ms
+      attempts: 2
+    };
+    scrapeProcessData.add(data, options);
+  }
+});
 
 app.use(cors());
 require('./server/routes')(app);
-
-
-//Promise.all([ 
-//  scrapers.epicTvShoeScraper.scrape(
-//    'https://shop.epictv.com/en/climbing-shoes/scarpa/instinct-vsr-climbing-shoe?sku=SCAW17_CLSHINVSR_35',
-//    'Scarpa'
-//  ),
-//  //scrapers.epicTv.scrape(),
-//  //scrapers.bergfreunde.scrape(),
-//  //scrapers.trekkin.scrape(),
-//  //scrapers.epicTvScarpa.scrape() 
-//  ]).then((values) => {
-//      console.log(values[0].history);
-//  });
 
 const PORT = 9000;
 app.listen(PORT, () => {

@@ -3,7 +3,8 @@ const router = express.Router();
 
 const {
     ShopsController,
-    ShoeModelController
+    ShoeModelController,
+    ShoeVariationController
 } = require('./controllers');
 
 module.exports = function(app) {
@@ -12,6 +13,8 @@ module.exports = function(app) {
     router.get('/shop/shoes/:id', ShopsController.shopShoesById);
 
     router.get('/shoes/models', ShoeModelController.index)
+
+    router.get('/shoes/variations', ShoeVariationController.index)
 
     app.use('/api', router);
 };

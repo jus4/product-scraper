@@ -10,8 +10,8 @@
   "author": "Jussi Leskinen",
   "license": "ISC",
   "dependencies": {
-    "puppeteer": "^5.5.0",
     "body-parser": "^1.19.0",
+    "bull": "^3.20.0",
     "cors": "^2.8.5",
     "cron": "^1.8.2",
     "dotenv": "^8.2.0",
@@ -19,6 +19,7 @@
     "lodash": "^4.17.20",
     "mongoose": "^5.10.14",
     "node-cron": "^2.0.3",
-    "node-fetch": "^2.6.1"
+    "node-fetch": "^2.6.1",
+    "puppeteer": "^5.5.0"
   }
 }
