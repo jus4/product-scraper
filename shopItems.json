@@ -30,10 +30,22 @@
        "scraper": "epicTvShoeScraper"
     },
     {
+       "model":"Instinct VSR",
+       "shop":"Bergfreunde",
+       "url":"https://www.bergfreunde.fi/scarpa-instinct-vs-r-kiipeilykengaet/?cnid=3c97f5830c1d0b62033dbde28b9ba",
+       "scraper": "bergfreundeScraper"
+    },
+    {
        "model":"Instinct VS",
        "shop":"Epic Tv",
        "url":"https://shop.epictv.com/en/climbing-shoes/scarpa/instinct-vs-climbing-shoe?sku=SCA15CLIM_SHOINVS_35",
        "scraper": "epicTvShoeScraper"
+    },
+    {
+       "model":"Instinct VS",
+       "shop":"Bergfreunde",
+       "url":"https://www.bergfreunde.fi/scarpa-instinct-vs-kiipeilykengaet/?cnid=3c97f5830c1d0b62033dbde28b9ba",
+       "scraper": "bergfreundeScraper"
     },
     {
        "model":"Drago",
@@ -42,10 +54,22 @@
        "scraper": "epicTvShoeScraper"
     },
     {
+       "model":"Drago",
+       "shop":"Bergfreunde",
+       "url":"https://www.bergfreunde.fi/scarpa-drago-kiipeilykengaet/?cnid=3c97f5830c1d0b62033dbde28b9ba",
+       "scraper": "bergfreundeScraper"
+    },
+    {
        "model":"Furia S",
        "shop":"Epic Tv",
        "url":"https://shop.epictv.com/en/climbing-shoes/scarpa/furia-s-climbing-shoe?sku=70055-000365",
        "scraper": "epicTvShoeScraper"
+    },
+    {
+       "model":"Furia S",
+       "shop":"Bergfreunde",
+       "url":"https://www.bergfreunde.fi/scarpa-furia-s-kiipeilykengaet/?cnid=3c97f5830c1d0b62033dbde28b9ba",
+       "scraper": "bergfreundeScraper"
     },
     {
        "model":"Chimera",

@@ -10,10 +10,13 @@ function scrape(shoeUrl) {
             await page.goto(shoeUrl,
                 { waitUntil: 'networkidle0'}
             );
+            await page.setDefaultNavigationTimeout(0);
 
             // Get price
-            const pricePath = await page.$x('/html/body/div[1]/div/section/div/div[1]/div[2]/div[1]/div/div[3]/div[1]/form/div[1]/span[3]/span/span[3]/span');
-            let price = await page.evaluate(el => el.textContent, pricePath[0]);
+            await page.waitForXPath('/html/body/div[1]/div/section/div/div[1]/div[2]/div[1]/div/div[3]/div[1]/form/div[1]/meta[1]');
+            const pricePath = await page.$x('/html/body/div[1]/div/section/div/div[1]/div[2]/div[1]/div/div[3]/div[1]/form/div[1]/meta[1]');
+            let price = await page.evaluate(el => el.content, pricePath[0]);
+            console.log(price);
             price.replace(/\D/g,'');
 
             // Get sizes
@@ -40,7 +43,7 @@ function scrape(shoeUrl) {
             
             return resolve(product);
         } catch(e) {
-            console.log(e);
+            console.log('Error:' + e);
             reject(e);
         }
     })

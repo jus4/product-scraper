@@ -2,13 +2,14 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const mongoose = require('mongoose');
-const scrapers = require('./server/scrapers');
 const shopItems = require('./shopItems.json');
 const cron = require('node-cron');
 const path = require('path');
 const Queue = require('bull');
-const {Shop, climbingShoeModel, climbingShoeVariation } = require('./server/models');
+const config = require('./config');
 
+
+// Setup Mongoose
 mongoose.connect('mongodb://localhost/productScraper', {useNewUrlParser: true, useUnifiedTopology: true});
 mongoose.set('useCreateIndex', true);
 mongoose.set('useNewUrlParser', true);
@@ -20,6 +21,8 @@ db.once('open', function() {
     console.log('Mongo db connected');
 });
 
+
+// Scraping setup with cron & Bull with Redis
 const scrapeProcessData = new Queue('scrapedata', {
   redis: {
     host: '127.0.0.1',
@@ -32,7 +35,7 @@ scrapeProcessData.on('completed', job => {
 })
 
 scrapeProcessData.process(path.resolve(__dirname, './server/prosessors/scrapeShoes.js'));
-cron.schedule('45,30,50 8-20 * * *', async function(){
+//cron.schedule('45,37,50 8-20 * * *', async function(){
   for( let i = 0; i < shopItems.length; i++) {
     const data = shopItems[i];
     const options = {
@@ -41,12 +44,23 @@ cron.schedule('45,30,50 8-20 * * *', async function(){
     };
     scrapeProcessData.add(data, options);
   }
-});
+//});
 
-app.use(cors());
+// Cors setup
+const corsOptions = {
+  origin: config.corsUrl,
+  optionsSuccessStatus: 200 // For legacy browser support
+}
+app.use(cors(corsOptions));
+console.log(`Cors allowed ${config.corsUrl}`);
 require('./server/routes')(app);
 
-const PORT = 9000;
+
+// Environment
+console.log(`Environment: ${config.environment}`);
+
+// Port
+const PORT = config.port;
 app.listen(PORT, () => {
     console.log(`Server is listening on port ${PORT}`);
 });

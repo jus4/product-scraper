@@ -7,8 +7,11 @@ function scrape(shoeUrl) {
             const browser = await puppeteer.launch()
             const page = await browser.newPage()
             
-            await page.goto(shoeUrl);
+            await page.goto(shoeUrl,
+                { waitUntil: 'networkidle0'}
+            );
 
+            await page.setDefaultNavigationTimeout(0);
             // Get price
             const pricePath = await page.$x('/html/body/div[8]/div/div[5]/div[1]/div[2]/div[2]/p');
             let price = await page.evaluate(el => el.textContent, pricePath[0]);
@@ -38,7 +41,7 @@ function scrape(shoeUrl) {
             
             return resolve(product);
         } catch(e) {
-            console.log(e);
+            console.log('Error:' + e);
             reject(e);
         }
     })

@@ -12,10 +12,21 @@ function scrape(shoeUrl) {
             );
             await page.setDefaultNavigationTimeout(0);
 
+            // Thanks for google data layer we get the price easy
+            let datalayer = await page.evaluate('dataLayer');
+            let price;
+            datalayer.filter( data => {
+                if (data.product_value) {
+                    price = data.product_value
+                }
+            });
+
             // Get price
-            const pricePath = await page.$x('//*[@id="product-pricing-block"]/div[1]/div[3]/div/div[2]/div/div/div/div');
-            let price = await page.evaluate(el => el.textContent, pricePath[0]);
-            price = price.replace(/€/g, '');
+            // TODO this only works with discount products, damm you EpicTv
+            //await page.waitForXPath('/html/body/div[4]/div/div[2]/div/div/div/div/div/article/div[1]/div[1]/div/div[2]/div[1]/div[3]/div/div[2]/div/div/div/div');
+            //const pricePath = await page.$x('/html/body/div[4]/div/div[2]/div/div/div/div/div/article/div[1]/div[1]/div/div[2]/div[1]/div[3]/div/div[2]/div/div/div/div');
+            //let price = await page.evaluate(el => el.textContent, pricePath[0]);
+            //price = price.replace(/€/g, '');
 
             // Get sizes
             await page.waitForSelector('.size-link-wrapper');
@@ -33,13 +44,13 @@ function scrape(shoeUrl) {
             browser.close()
 
             const product = {
-                price: parseFloat(price),
+                price: Math.ceil(price),
                 sizes: shoeSizes
             } 
             
             return resolve(product);
         } catch(e) {
-            console.log(e);
+            console.log('error' + e);
             reject(e);
         }
     })
