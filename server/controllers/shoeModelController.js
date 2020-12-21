@@ -7,7 +7,7 @@ const ShoeModelController = {
             if (err) res.status(500).send('Invalid error');
         })
         models = models.map((model) => {
-            return {name: model.model, id: model._id, itemCount: model.shoeCollection.length}
+            return {name: model.model, id: model._id, itemCount: model.shoeCollection.length, manufacturer: model.manufacturer}
         })
 
         res.status(200).json(models);

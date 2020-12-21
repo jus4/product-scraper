@@ -4,7 +4,14 @@ process.setMaxListeners(Infinity);
 function scrape(shoeUrl) {
     return new Promise(async (resolve, reject) => {
         try {
-            const browser = await puppeteer.launch()
+            const chromeFlags = [
+                '--headless',
+                '--no-sandbox',
+                "--disable-gpu",
+                "--single-process",
+                "--no-zygote"
+            ];
+            const browser = await puppeteer.launch({args: chromeFlags})
             const page = await browser.newPage()
             
             await page.goto(shoeUrl,
@@ -34,7 +41,9 @@ function scrape(shoeUrl) {
                    return array;
             });
             
-            browser.close()
+            await browser.close();
+            await browser.disconnect();
+            await browser.on('disconnected', () => console.log('disconnected'));
 
             const product = {
                 price: parseFloat(price),

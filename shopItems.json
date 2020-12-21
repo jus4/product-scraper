@@ -1,90 +1,133 @@
 [
     {
        "model":"Solution Mens",
+       "manufacturer": "La Sportiva",
        "shop":"Epic Tv",
        "url":"https://shop.epictv.com/en/climbing-shoes/la-sportiva/solution-2015?sku=LASS18M_CSHOSOL_WHI36",
        "scraper": "epicTvShoeScraper"
     },
     {
        "model":"Skwama",
+       "manufacturer": "La Sportiva",
        "shop":"Epic Tv",
        "url":"https://shop.epictv.com/en/climbing-shoes/la-sportiva/skwama-climbing-shoe?sku=LAS16_CLSH_SKWBY_35.5",
        "scraper": "epicTvShoeScraper"
     },
     {
+       "model":"Skwama",
+       "manufacturer": "La Sportiva",
+       "shop":"Bergfreunde",
+       "url":"https://www.bergfreunde.fi/la-sportiva-skwama-kiipeilykengaet/",
+       "scraper": "bergfreundeScraper"
+    },
+    {
        "model":"Testarossa",
+       "manufacturer": "La Sportiva",
        "shop":"Epic Tv",
        "url":"https://shop.epictv.com/en/climbing-shoes/la-sportiva/testarossa-2015?sku=20U30099934",
        "scraper": "epicTvShoeScraper"
     },
     {
+       "model":"Testarossa",
+       "manufacturer": "La Sportiva",
+       "shop":"Bergfreunde",
+       "url":"https://www.bergfreunde.fi/la-sportiva-testarossa-kiipeilykengaet/",
+       "scraper": "bergfreundeScraper"
+    },
+    {
        "model":"Cobra",
+       "manufacturer": "La Sportiva",
        "shop":"Epic Tv",
        "url":"https://shop.epictv.com/en/climbing-shoes/la-sportiva/cobra-climbing-shoe?sku=LASS18M_CSHOCOB_ORA36",
        "scraper": "epicTvShoeScraper"
     },
     {
+       "model":"Cobra",
+       "manufacturer": "La Sportiva",
+       "shop":"Bergfreunde",
+       "url":"https://www.bergfreunde.fi/la-sportiva-cobra-kiipeilykengaet/",
+       "scraper": "bergfreundeScraper"
+    },
+    {
        "model":"Instinct VSR",
+       "manufacturer":"Scarpa",
        "shop":"Epic Tv",
        "url":"https://shop.epictv.com/en/climbing-shoes/scarpa/instinct-vsr-climbing-shoe?sku=SCAW17_CLSHINVSR_35",
        "scraper": "epicTvShoeScraper"
     },
     {
        "model":"Instinct VSR",
+       "manufacturer":"Scarpa",
        "shop":"Bergfreunde",
        "url":"https://www.bergfreunde.fi/scarpa-instinct-vs-r-kiipeilykengaet/?cnid=3c97f5830c1d0b62033dbde28b9ba",
        "scraper": "bergfreundeScraper"
     },
     {
        "model":"Instinct VS",
+       "manufacturer":"Scarpa",
        "shop":"Epic Tv",
        "url":"https://shop.epictv.com/en/climbing-shoes/scarpa/instinct-vs-climbing-shoe?sku=SCA15CLIM_SHOINVS_35",
        "scraper": "epicTvShoeScraper"
     },
     {
        "model":"Instinct VS",
+       "manufacturer":"Scarpa",
        "shop":"Bergfreunde",
        "url":"https://www.bergfreunde.fi/scarpa-instinct-vs-kiipeilykengaet/?cnid=3c97f5830c1d0b62033dbde28b9ba",
        "scraper": "bergfreundeScraper"
     },
     {
        "model":"Drago",
+       "manufacturer": "Scarpa",
        "shop":"Epic Tv",
        "url":"https://shop.epictv.com/en/climbing-shoes/scarpa/drago-climbing-shoe?sku=SCA16S_CSHODRA_YEL38",
        "scraper": "epicTvShoeScraper"
     },
     {
        "model":"Drago",
+       "manufacturer": "Scarpa",
        "shop":"Bergfreunde",
        "url":"https://www.bergfreunde.fi/scarpa-drago-kiipeilykengaet/?cnid=3c97f5830c1d0b62033dbde28b9ba",
        "scraper": "bergfreundeScraper"
     },
     {
        "model":"Furia S",
+       "manufacturer": "Scarpa",
        "shop":"Epic Tv",
        "url":"https://shop.epictv.com/en/climbing-shoes/scarpa/furia-s-climbing-shoe?sku=70055-000365",
        "scraper": "epicTvShoeScraper"
     },
     {
        "model":"Furia S",
+       "manufacturer": "Scarpa",
        "shop":"Bergfreunde",
        "url":"https://www.bergfreunde.fi/scarpa-furia-s-kiipeilykengaet/?cnid=3c97f5830c1d0b62033dbde28b9ba",
        "scraper": "bergfreundeScraper"
     },
     {
        "model":"Chimera",
+       "manufacturer": "La Sportiva",
        "shop":"Epic Tv",
        "url":"https://shop.epictv.com/en/climbing-shoes/scarpa/chimera-climbing-shoe?sku=SCAS17M_CLSHCHI_Y/B/V39",
        "scraper": "epicTvShoeScraper"
     },
     {
+       "model":"Chimera",
+       "manufacturer": "La Sportiva",
+       "shop":"Bergfreunde",
+       "url":"https://www.bergfreunde.fi/scarpa-chimera-kiipeilykengaet/",
+       "scraper": "bergfreundeScraper"
+    },
+    {
        "model":"Solution Mens",
+       "manufacturer": "La Sportiva",
        "shop":"Bergfreunde",
        "url":"https://www.bergfreunde.fi/la-sportiva-solution-kiipeilykengaet/",
        "scraper": "bergfreundeScraper"
     },
     {
        "model":"Solution Mens",
+       "manufacturer": "La Sportiva",
        "shop":"Trekkinn",
        "url":"https://www.trekkinn.com/Ulkoilu-vuoristo/la-sportiva-solution/136688721/p",
        "scraper": "trekkinnShoeScraper"

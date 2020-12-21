@@ -1,7 +1,8 @@
-const {  climbingShoeVariation, climbingShoeModel } = require('./climbingShoe');
+const {  climbingShoeVariation, climbingShoeModel, Manufacturer } = require('./climbingShoe');
 
 module.exports = {
     'Shop' : require('./shop'),
     climbingShoeModel,
-    climbingShoeVariation
+    climbingShoeVariation,
+    Manufacturer
 };

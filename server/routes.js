@@ -4,8 +4,10 @@ const router = express.Router();
 const {
     ShopsController,
     ShoeModelController,
-    ShoeVariationController
+    ShoeVariationController,
+    ManufacturerController
 } = require('./controllers');
+const manufacturerController = require('./controllers/manufacturerController');
 
 module.exports = function(app) {
     router.get('/shops', ShopsController.index); 
@@ -15,6 +17,8 @@ module.exports = function(app) {
     router.get('/shoes/models', ShoeModelController.index)
 
     router.get('/shoes/variations', ShoeVariationController.index)
+
+    router .get('/manufacturers', ManufacturerController.index)
 
     app.use('/api', router);
 };

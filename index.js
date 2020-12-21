@@ -35,7 +35,7 @@ scrapeProcessData.on('completed', job => {
 })
 
 scrapeProcessData.process(path.resolve(__dirname, './server/prosessors/scrapeShoes.js'));
-//cron.schedule('45,37,50 8-20 * * *', async function(){
+cron.schedule('15,45,37,50,3 8-20 * * *', async function(){
   for( let i = 0; i < shopItems.length; i++) {
     const data = shopItems[i];
     const options = {
@@ -44,7 +44,7 @@ scrapeProcessData.process(path.resolve(__dirname, './server/prosessors/scrapeSho
     };
     scrapeProcessData.add(data, options);
   }
-//});
+});
 
 // Cors setup
 const corsOptions = {

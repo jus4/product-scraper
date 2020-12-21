@@ -1,4 +1,4 @@
-const {Shop, climbingShoeModel, climbingShoeVariation } = require('../models');
+const {Shop, climbingShoeModel, climbingShoeVariation, Manufacturer } = require('../models');
 const scrapers = require('../scrapers');
 const mongoose = require('mongoose'); // Mongoose needs to be reinitialize on jobs in order to work
 mongoose.connect('mongodb://localhost/productScraper', {useNewUrlParser: true, useUnifiedTopology: true});
@@ -65,6 +65,26 @@ async function getShoeVariation(url) {
   return newShoeVariation;
 }
 
+async function getManufacturer(name) {
+    
+  const manufacturer = await Manufacturer.findOne({ name: name});
+  if (manufacturer) {
+    return manufacturer
+  }
+  const newManufacturer = new Manufacturer({
+      name: name,
+  })
+  newManufacturer.save( function(err, document) {
+    if (err) {
+      console.log(err);
+    }
+    console.log(document);
+  })
+
+
+  return newManufacturer;
+}
+
 module.exports = async job => {
 
         const scrapedData = await scrapers[job.data.scraper].scrape(job.data.url); // Get scraped  data
@@ -72,15 +92,20 @@ module.exports = async job => {
         const shop = await getShop(job.data.shop);
         const shoeModel = await getShoeLabel(job.data.model);
         const shoeVariation = await getShoeVariation(job.data.url);
+        const manufacturer = await getManufacturer(job.data.manufacturer);
 
-        Promise.all([scrapedData, shop, shoeModel,shoeVariation]).then( async function(response) {
+        Promise.all([scrapedData, shop, shoeModel,shoeVariation, manufacturer]).then( async function(response) {
             const data = response[0];
             const shop = response[1];
             const shoeModel = response[2];
             const shoeVariation = response[3];
+            const manufacturer = response[4];
+
+            console.log(manufacturer);
 
             const shoeLabelUpdate = {
-                $addToSet: {shoeCollection: shoeVariation._id}
+                $addToSet: {shoeCollection: shoeVariation._id},
+                manufacturer: manufacturer._id
             }
             const modelOptions = { new: true };
             await climbingShoeModel.findByIdAndUpdate(shoeModel._id, shoeLabelUpdate, modelOptions, function(err, document) {
@@ -99,7 +124,8 @@ module.exports = async job => {
                       price: data.price,
                       sizes: data.sizes,
                       shop: shop._id,
-                      model: shoeModel._id
+                      model: shoeModel._id,
+                      manufacturer: manufacturer._id
                     }
                     const variationOptions = { new: true };
                     await climbingShoeVariation.findByIdAndUpdate(shoeVariation._id, shoeVariationUpdate, variationOptions, 
