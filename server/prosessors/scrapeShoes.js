@@ -101,8 +101,6 @@ module.exports = async job => {
             const shoeVariation = response[3];
             const manufacturer = response[4];
 
-            console.log(manufacturer);
-
             const shoeLabelUpdate = {
                 $addToSet: {shoeCollection: shoeVariation._id},
                 manufacturer: manufacturer._id

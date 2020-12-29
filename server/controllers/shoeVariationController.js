@@ -15,17 +15,16 @@ const ShoeVariationController = {
         if(hasShoeModel) {
             filter.model = req.query.shoeModel;
         }
-        if(hasShop) {
-            filter.shop = req.query.shop;
-        }
 
         await climbingShoeVariation.find(filter)
         .populate('model shop')
         .sort({'model' : 'desc'})
         .skip((resPerPage * page) - resPerPage)
         .limit(resPerPage)
-        .exec( function(err, found) {
+        .exec( async function(err, found) {
             if (err) console.log(err)
+            const totalPages = await climbingShoeVariation.countDocuments(filter);
+
             const shoes = found.map( (element) => {
                 return {
                     size: element.sizes,
@@ -37,7 +36,7 @@ const ShoeVariationController = {
                 };
             })
 
-            res.status(200).json(shoes);
+            res.status(200).json({shoes:shoes, page: page, totalPages: Math.floor(totalPages / resPerPage) + 1});
         })
         
     }

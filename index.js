@@ -35,12 +35,14 @@ scrapeProcessData.on('completed', job => {
 })
 
 scrapeProcessData.process(path.resolve(__dirname, './server/prosessors/scrapeShoes.js'));
-cron.schedule('15,45,37,50,3 8-20 * * *', async function(){
+cron.schedule('3,32 11-20 * * *', async function(){
   for( let i = 0; i < shopItems.length; i++) {
     const data = shopItems[i];
     const options = {
       delay: 100, // 1 min in ms
-      attempts: 2
+      attempts: 2,
+      removeOnFail: 2,
+      timeout: 1000,
     };
     scrapeProcessData.add(data, options);
   }
