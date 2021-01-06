@@ -10,7 +10,7 @@ const config = require('./config');
 
 
 // Setup Mongoose
-mongoose.connect('mongodb://localhost/productScraper', {useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect(`mongodb://${config.mongoHost}/productScraper`, {useNewUrlParser: true, useUnifiedTopology: true});
 mongoose.set('useCreateIndex', true);
 mongoose.set('useNewUrlParser', true);
 mongoose.set('useFindAndModify', false);
@@ -25,7 +25,7 @@ db.once('open', function() {
 // Scraping setup with cron & Bull with Redis
 const scrapeProcessData = new Queue('scrapedata', {
   redis: {
-    host: '127.0.0.1',
+    host: config.redisHost, 
     port: 6379,
   }
 });

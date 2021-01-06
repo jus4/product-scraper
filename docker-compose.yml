@@ -1,28 +1,26 @@
 version: '3'
 services:
+
   redis:
     image: redis:alpine
-    container_name: cache
-    expose:
-      - 6379
+    ports: 
+      - "6379:6379"
+       
   app:
     container_name: price-checker-api
     build: .
     ports:
-      -9000:9000
-    restart: on-failure
-    networks:
-      - network
-    depends_on:
-      - db
+      - "9000:9000"
+    environment:
+      - MONGO_HOST=mongo
+      - REDIS_HOST=redis        
+    depends_on: 
+      - "mongo"
+
   mongo:
-    container_name: mongo
     image: mongo:latest
     volumes:
       - ./data:/data/db
     ports:
-       - '27018:27017'
-    networks:
-      - network
-
+       - "27018:27017"
 
