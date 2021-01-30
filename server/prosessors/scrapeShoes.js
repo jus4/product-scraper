@@ -1,11 +1,17 @@
 const {Shop, climbingShoeModel, climbingShoeVariation, Manufacturer } = require('../models');
+const config = require('../../config');
 const scrapers = require('../scrapers');
 const mongoose = require('mongoose'); // Mongoose needs to be reinitialize on jobs in order to work
-mongoose.connect('mongodb://localhost/productScraper', {useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect(`mongodb://${config.mongoHost}/productScraper`, {useNewUrlParser: true, useUnifiedTopology: true});
 mongoose.set('useCreateIndex', true);
 mongoose.set('useNewUrlParser', true);
 mongoose.set('useFindAndModify', false);
 mongoose.set('useUnifiedTopology', true);
+const db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function() {
+    console.log('Mongo db connected');
+});
 
 async function getShop(name) {
   const shop = await Shop.findOne({name: name});

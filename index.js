@@ -25,7 +25,7 @@ db.once('open', function() {
 // Scraping setup with cron & Bull with Redis
 const scrapeProcessData = new Queue('scrapedata', {
   redis: {
-    host: config.redisHost, 
+    host: config.redisHost,
     port: 6379,
   }
 });
@@ -33,16 +33,17 @@ const scrapeProcessData = new Queue('scrapedata', {
 scrapeProcessData.on('completed', job => {
   console.log(`Job with id ${job.id} has been completed. Product ${job.data.model}`);
 })
-
 scrapeProcessData.process(path.resolve(__dirname, './server/prosessors/scrapeShoes.js'));
-cron.schedule('3,32 11-20 * * *', async function(){
+cron.schedule('15,35 * * * *', async function(){
   for( let i = 0; i < shopItems.length; i++) {
+    console.log('scraping started');
+
     const data = shopItems[i];
     const options = {
-      delay: 100, // 1 min in ms
+      delay: 100000, // 1 min in ms
       attempts: 2,
       removeOnFail: 2,
-      timeout: 1000,
+      timeout: 10000,
     };
     scrapeProcessData.add(data, options);
   }
@@ -50,7 +51,7 @@ cron.schedule('3,32 11-20 * * *', async function(){
 
 // Cors setup
 const corsOptions = {
-  origin: config.corsUrl,
+  //origin: config.corsUrl,
   optionsSuccessStatus: 200 // For legacy browser support
 }
 app.use(cors(corsOptions));

@@ -1,0 +1,10 @@
+[
+    {
+       "model":"Solution Mens",
+       "manufacturer": "La Sportiva",
+       "shop":"Epic Tv",
+       "url":"https://shop.epictv.com/en/climbing-shoes/la-sportiva/solution-2015?sku=SP20G000100U36",
+       "scraper": "epicTvShoeScraper"
+    }
+]
+

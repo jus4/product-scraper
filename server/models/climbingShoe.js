@@ -45,7 +45,7 @@ const climbingShoeModelSchema = new mongoose.Schema({
     ],
     manufacturer: { 
         type: mongoose.Schema.Types.ObjectId,
-        unique: true
+    //    unique: true
     }
 });
 const climbingShoeModel = mongoose.model('ClimbingShoeModel', climbingShoeModelSchema);

@@ -1,4 +1,4 @@
-version: '3'
+version: '3.7'
 services:
 
   redis:
@@ -8,12 +8,14 @@ services:
        
   app:
     container_name: price-checker-api
+    init: true
     build: .
     ports:
       - "9000:9000"
     environment:
       - MONGO_HOST=mongo
-      - REDIS_HOST=redis        
+      - REDIS_HOST=redis
+      - PORT=9000
     depends_on: 
       - "mongo"
 
